@@ -110,6 +110,7 @@ void Restaurant::storeDryDishes(string collection, TypeOfDish type) {
 		{
 			clean.push(*it);
 			it = drying.erase(it);
+			it--; // erase returns an iterator to the elements that follows the on erased
 		}
 	}
 
