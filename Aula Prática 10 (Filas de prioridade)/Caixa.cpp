@@ -3,6 +3,7 @@
  */
 
 #include "Caixa.h"
+#include <sstream>
 
 
 Objeto::Objeto(unsigned idObj, unsigned pesoObj): id(idObj), peso(pesoObj)
@@ -61,8 +62,21 @@ bool Caixa::operator<(const Caixa& c1) const {
 
 
 string Caixa::imprimeConteudo() const {
-	// TODO
-	return "";
+	stringstream ss;
+	if(objetos.empty()) {
+		ss << "Caixa " << id << " vazia!\n";
+		return ss.str();
+	}
+
+	STACK_OBJS obj = objetos;
+	ss << "C" << id << "[ ";
+	while(!obj.empty()) {
+		 ss << obj.top() << " ";
+		 obj.pop();
+	}
+	ss << "]";
+
+	return ss.str();
 }
 
 

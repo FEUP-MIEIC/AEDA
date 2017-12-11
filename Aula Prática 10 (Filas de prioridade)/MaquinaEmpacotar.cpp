@@ -3,7 +3,8 @@
  */
 
 #include "MaquinaEmpacotar.h"
-
+#include <unordered_set>
+#include <sstream>
 
 MaquinaEmpacotar::MaquinaEmpacotar(int capCaixas): capacidadeCaixas(capCaixas)
 {}
@@ -76,20 +77,61 @@ Caixa MaquinaEmpacotar::procuraCaixa(Objeto& obj) {
 
 
 unsigned MaquinaEmpacotar::empacotaObjetos() {
-	// TODO
-	return 0;
+	HEAP_OBJS obj = objetos;
+	unordered_set<unsigned> ids;
+
+	// for each object, sorted by weight
+
+	while(!objetos.empty()) {
+		Objeto o = objetos.top();
+		objetos.pop();
+
+		Caixa c = procuraCaixa(o);
+		c.addObjeto(o);
+		caixas.push(c);
+
+		ids.insert(c.getID());
+	}
+
+	return ids.size();
 }
 
 string MaquinaEmpacotar::imprimeObjetosPorEmpacotar() const {
-	// TODO
-	return "";
+	HEAP_OBJS obj = objetos;
+	stringstream ss;
+
+	if(obj.size() == 0){
+		return "Nao ha objetos!\n";
+	}
+
+	while(!obj.empty()) {
+		ss << obj.top() << endl;
+		obj.pop();
+	}
+	return ss.str();
 }
 
 
 
 Caixa MaquinaEmpacotar::caixaMaisObjetos() const {
-	// TODO
-	Caixa cx;
+
+	if(caixas.empty()) {
+		throw MaquinaSemCaixas();
+	}
+	HEAP_CAIXAS cxs = caixas;
+
+	Caixa cx(cxs.top());
+	cxs.pop();
+
+	while(!cxs.empty()) {
+		if(cxs.top().getSize() > cx.getSize()) {
+			cx = cxs.top();
+		}
+
+		cxs.pop();
+	}
+
+
 	return cx;
 }
 
